@@ -1,9 +1,13 @@
+//Created By: Andrew Brown 20/10/28
 #include <iostream>
 
-/*
+
 struct MyShared{
-	...;
-};*/
+	int threadNum;
+	int ID;
+	int reportID;
+	bool Running;
+};
 
 int main(void)
 {

@@ -3,7 +3,7 @@
 #include "SharedObject.h"
 #include "thread.h"
 #include <string> 
-
+#include "Semaphore.h"
 
 struct MyShared{
 	int sdelay;
@@ -25,14 +25,21 @@ public:
 		}
 
 		virtual long ThreadMain(void) override{
-			
+			Semaphore semW("WriterSem"); //creating semaphores for the writer and reader
+			Semaphore semR("ReaderSem");
 			Shared<MyShared> sharedMemory ("sharedMemory");
 			while(true)// Here the memory values of the thread must be updated
 			{
+				semW.Wait(); //Lock resource so no others can write to the shared memory at the same time
+				//Update the thread information while it is locked
 				sharedMemory->sthreadID = threadID; //sets thread ID
 				sharedMemory->sreportID = reportID; //sets number of reports
-				reportID ++; //increments the number of reports 
 				sharedMemory->sdelay = delay;//sets delay
+				reportID ++; //increments the number of reports 
+				
+				semW.Signal(); //once the information is set the resource can be unlocked for other read write operations to occur as needed
+				semR.Signal(); //signal the reader semaphore so that reads can occur from the shared resource 
+				
 				sleep(delay); //sleeps the thread for the amount of delay set by the user
 				if(flag){
 					break;

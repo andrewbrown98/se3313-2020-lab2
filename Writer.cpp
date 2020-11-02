@@ -25,9 +25,13 @@ public:
 		}
 
 		virtual long ThreadMain(void) override{
+
+			Shared<MyShared> sharedMemory ("sharedMemory");
+			std::cout<<"Got here1"<<std::endl;
 			Semaphore semW("WriterSem"); //creating semaphores for the writer and reader
 			Semaphore semR("ReaderSem");
-			Shared<MyShared> sharedMemory ("sharedMemory");
+
+			
 			while(true)// Here the memory values of the thread must be updated
 			{
 				semW.Wait(); //Lock resource so no others can write to the shared memory at the same time
@@ -52,6 +56,10 @@ public:
 
 int main(void)
 {
+	std::cout<<"Got here4"<<std::endl;
+	Semaphore semW("WriterSem",1,true); //Creates sem with initial value of one and owner status as true
+	Semaphore semR("ReaderSem",0,false); //Creates sem with initial value of zero and owner status as false
+	std::cout<<"Got here3"<<std::endl;
 	std::string  userInput;
 	std::string userDelay;
 	int numThreads=1; //Used for creating writerThread objects where numThreads will be used to give threads ID #s
@@ -59,7 +67,7 @@ int main(void)
 	std::cout << "I am a Writer" << std::endl;
 	
 	WriterThread * thread; //declare thread 
-
+	std::cout<<"Got here2"<<std::endl;
 	Shared<MyShared> shared("sharedMemory", true); //This is the owner of sharedMamory
 	//Set the running value to true so the reader can poll the shared memory
 	shared ->sRunning = true;

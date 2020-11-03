@@ -16,7 +16,7 @@ int main(void)
 {
 	std::cout << "I am a reader" << std::endl;
 
-	Semaphore semR("ReaderSem");
+	Semaphore sem2("readerSemaphore",0,false);
 	Shared<MyShared> sharedMemory("sharedMemory");
 	
 
@@ -24,7 +24,7 @@ int main(void)
 	// then it will display the data, if it is not it will break 
 	while (true){
 		if (sharedMemory->sRunning == true){
-			semR.Wait();
+			sem2.Wait();
 			std::cout << "ThreadID: " << sharedMemory->sthreadID <<" ReportID: "<<sharedMemory->sreportID <<" Delay: " <<sharedMemory->sdelay <<std::endl;
 		
 		}else {
